@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}
+{{ group }}
+{% endblock %}
+{% block content %}
+  <main>
+    <div class="container py-5">
+      <h1>Последние записи группы "{{ group }}".</h1>
+      <h3>{{ group.description }}</h3>
+      <h6>Найдено {{  count  }} записей.</h6>
+      <hr>
+      {% for post in page_obj %}
+        <article>
+          <ul>
+            <li>
+              <p>Автор:
+              <a href="{%url 'posts:profile' post.author %}">{{ post.author.get_full_name }}</a>
+              </p>
+            </li>
+            <li>
+              Дата публикации: {{ post.pub_date|date:"d E Y" }}
+            </li>
+          </ul>
+          <p>{{ post.text | linebreaksbr }}</p>
+          {% if not forloop.last %}<hr>{% endif %}
+        </article>
+      {% endfor %}
+      {% include 'posts/includes/paginator.html' %}
+    </div>
+  </main>
+{% endblock %}
