@@ -7,7 +7,7 @@
       <h6>Всего {{ count }} записей.</h6>
       <hr>
       {% for post in page_obj %}
-        {% include 'posts/includes/posts_form.html' with group_flag='True' %}
+        {% include 'posts/includes/posts_form.html' with all_posts_flag='True' %}
       {% endfor %}
       {% include 'posts/includes/paginator.html' %}
     </div>

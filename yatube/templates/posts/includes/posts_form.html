@@ -4,7 +4,7 @@
       Автор:
       <a href="{%url 'posts:profile' post.author %}">{{ post.author.get_full_name }}</a>
     </li>
-    {% if date_flag == 'True' %}
+    {% if group_flag == 'True' %}
     {% if post.group %}
       <li>
           Группа:
@@ -19,7 +19,7 @@
 </article>
 {{ posts.group.slug }}
 {{ post.text|linebreaks }}
-{% if group_flag == 'True' %}
+{% if all_posts_flag == 'True' %}
   {% if post.group %}
     <a href="{% url 'posts:group_list' post.group.slug %}">все записи группы {{ post.group.title }}</a>
     {% elif not post.group %}
