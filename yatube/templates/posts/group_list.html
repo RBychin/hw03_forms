@@ -10,22 +10,7 @@
       <h6>Найдено {{  count  }} записей.</h6>
       <hr>
       {% for post in page_obj %}
-        <article>
-          <ul>
-            <li>
-              <p>Автор:
-              <a href="{%url 'posts:profile' post.author %}">{{ post.author.get_full_name }}</a>
-              </p>
-            </li>
-            <li>
-              Дата публикации: {{ post.pub_date|date:"d E Y" }}
-            </li>
-          </ul>
-           <p>
-          {{ post.text|linebreaks }}
-          <a href="{% url 'posts:post_detail' post.pk %}">(подробная инфомация)</a>
-          {% if not forloop.last %}<hr>{% endif %}
-        </article>
+      {% include 'posts/includes/posts_form.html' %}
       {% endfor %}
       {% include 'posts/includes/paginator.html' %}
     </div>
