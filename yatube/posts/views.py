@@ -7,55 +7,54 @@ from .forms import PostForm
 P_COUNT = 10  # post count on page
 
 
+def paginator_func(request, posts):
+    paginator = Paginator(posts, P_COUNT)
+    page_number = request.GET.get('page')
+    return paginator.get_page(page_number)
+
+
 def index(request):
-    """Главная страница."""
+    """Main page."""
     template = 'posts/index.html'
     posts = Post.objects.select_related('author', 'group')
     count = Post.objects.all().count
-    paginator = Paginator(posts, 10)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
     context = {
-        'page_obj': page_obj,
+        'page_obj': paginator_func(request, posts),
         'count': count
     }
     return render(request, template, context)
 
 
 def group_posts(request, slug):
-    """Страница темы блога."""
+    """Group posts page."""
     template = 'posts/group_list.html'
     group = get_object_or_404(Group, slug=slug)
     count = group.posts.all().count()
     posts = group.posts.all()
-    paginator = Paginator(posts, 10)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
     context = {
         'group': group,
-        'page_obj': page_obj,
+        'page_obj': paginator_func(request, posts),
         'count': count,
     }
     return render(request, template, context)
 
 
 def profile(request, username):
+    """Private user page."""
     template = 'posts/profile.html'
     author = get_object_or_404(User, username=username)
     count = author.posts.all().count
     posts = author.posts.all()
-    paginator = Paginator(posts, 10)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
     context = {
         'author': author,
         'count': count,
-        'page_obj': page_obj
+        'page_obj': paginator_func(request, posts)
     }
     return render(request, template, context)
 
 
 def post_detail(request, post_id):
+    """Post`s description and info."""
     template = 'posts/post_detail.html'
     post = get_object_or_404(Post, pk=post_id)
     count = post.author.posts.all().count
@@ -70,6 +69,7 @@ def post_detail(request, post_id):
 
 @login_required
 def post_create(request):
+    """This page create a new post."""
     template = 'posts/create_post.html'
     form = PostForm(request.POST or None)
     if form.is_valid():
@@ -79,12 +79,13 @@ def post_create(request):
         return redirect('posts:profile', request.user)
     context = {
         'form': form,
-        'is_edit': False}
+    }
     return render(request, template, context)
 
 
 @login_required
 def post_edit(request, post_id):
+    """This page edit a page."""
     template = 'posts/create_post.html'
     post = get_object_or_404(Post, pk=post_id)
     if post.author != request.user:
